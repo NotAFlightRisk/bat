@@ -2311,7 +2311,7 @@ fn cache_build_blank() {
         .arg("--acknowledgements")
         .assert()
         .success()
-        .stdout(
+        .stderr(
             predicate::str::is_match(
                 "Writing theme set to .*/themes.bin ... okay
 Writing syntax set to .*/syntaxes.bin ... okay
@@ -2356,13 +2356,13 @@ fn cache_build() {
         .arg("--acknowledgements")
         .assert()
         .success()
-        .stdout(
+        .stderr(
             predicate::str::is_match(
                 "Writing theme set to .*/themes.bin ... okay\nWriting syntax set to .*/syntaxes.bin ... okay\nWriting acknowledgements to .*/acknowledgements.bin ... okay\nWriting metadata to folder .* ... okay",
             )
             .unwrap(),
         )
-        .stdout(predicate::str::contains("Some referenced contexts could not be found!").not())
+        .stderr(predicate::str::contains("Some referenced contexts could not be found!").not())
         ;
 
     // Now we expect the files to exist. If they exist, we assume contents are correct
@@ -2404,7 +2404,8 @@ fn cache_auto_build_on_first_run() {
         .assert()
         .success()
         .stderr(predicate::str::contains("building cache"))
-        .stdout(predicate::str::contains("example"));
+        .stdout(predicate::str::contains("example"))
+        .stdout(predicate::str::contains("Writing").not());
 
     assert!(cache_dir.path().join("themes.bin").exists());
     assert!(cache_dir.path().join("syntaxes.bin").exists());
